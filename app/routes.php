@@ -21,13 +21,15 @@ return function (App $app) {
 
         return $response->withHeader("Content-Type", "application/json");
     });
+    
 
     // get by id
-    $app->get('/countries/{id}', function (Request $request, Response $response, $args) {
+    $app->get('/siswa/{id}', function (Request $request, Response $response, $args) {
         $db = $this->get(PDO::class);
 
-        $query = $db->prepare('SELECT * FROM countries WHERE id=?');
-        $query->execute([$args['id']]);
+        $query = $db->prepare('CALL GetSiswaByPeminatan(:p_Id_peminatan)');
+        $query->bindParam(':p_Id_peminatan', $args['id'], PDO::PARAM_INT);
+        $query->execute();
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
         $response->getBody()->write(json_encode($results[0]));
 
