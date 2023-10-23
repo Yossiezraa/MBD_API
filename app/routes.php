@@ -76,6 +76,18 @@ return function (App $app) {
         return $response->withHeader("Content-Type", "application/json");
     });
 
+    $app->get('/sekolah/{id}', function (Request $request, Response $response, $args) {
+        $db = $this->get(PDO::class);
+
+        $query = $db->prepare('CALL GetSiswaBySekolah(:p_Id_asal_sekolah)');
+        $query->bindParam(':p_Id_asal_sekolah', $args['id'], PDO::PARAM_INT);
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        $response->getBody()->write(json_encode($results[0]));
+
+        return $response->withHeader("Content-Type", "application/json");
+    });
+
     // post data
     $app->post('/countries', function (Request $request, Response $response) {
         $parsedBody = $request->getParsedBody();
